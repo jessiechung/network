@@ -13,6 +13,9 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -24,8 +27,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class MainActivity extends ActionBarActivity {
@@ -69,7 +75,8 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 		
-		private TextView textView;
+		private EditText editText;
+		private Button button;
 
 		public PlaceholderFragment() {
 		}
@@ -80,16 +87,22 @@ public class MainActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 			
-			textView = (TextView) rootView.findViewById(R.id.textView1);
-			//String content = fetch();
-			String content = fetch2();
-			textView.setText(content);
+			editText = (EditText) rootView.findViewById(R.id.editText1);
+			button = (Button) rootView.findViewById(R.id.button1);
+			
+			button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					fetch(editText.getText().toString());
+				}
+			});
 			
 			return rootView;
 		}
 
-		private String fetch() {
-			String urlString = "http://www.ntu.edu.tw/";
+		private String fetch(String address) {
+			//String urlString = "http://www.ntu.edu.tw/";
+			String urlString = "http://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&sensor=false";
 			
 			try {
 				URL url = new URL(urlString);
@@ -102,12 +115,23 @@ public class MainActivity extends ActionBarActivity {
 				while ((line = buffer.readLine()) != null) {
 					result += line;
 				}
+				
+				JSONObject object = new JSONObject(result);
+				JSONArray results = object.getJSONArray("results");
+				for (int i=0; i<results.length(); i++) {
+					String formattedAddress = results.getJSONObject(i).getString("formatted_address");
+					Toast.makeText(getActivity(), formattedAddress, Toast.LENGTH_SHORT).show();
+				}
+				
 				Log.d("debug", result);
+				
 				return result;
 				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			
