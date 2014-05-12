@@ -79,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		private EditText editText;
 		private Button button;
-		private ProgressDialog dialog;
+		//private ProgressDialog dialog;
 
 		public PlaceholderFragment() {
 		}
@@ -100,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
 					AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
 						@Override
 						protected void onPreExecute() {
-							dialog.show();
+							//dialog.show();
 						}
 						
 						@Override
@@ -110,7 +110,7 @@ public class MainActivity extends ActionBarActivity {
 						
 						@Override
 						protected void onPostExecute(String result) {
-							dialog.dismiss();
+							//dialog.dismiss();
 							Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
 						}
 					};
