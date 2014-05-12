@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -78,6 +79,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		private EditText editText;
 		private Button button;
+		private ProgressDialog dialog;
 
 		public PlaceholderFragment() {
 		}
@@ -97,12 +99,18 @@ public class MainActivity extends ActionBarActivity {
 					
 					AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
 						@Override
+						protected void onPreExecute() {
+							dialog.show();
+						}
+						
+						@Override
 						protected String doInBackground(Void... params) {
 							return fetch(editText.getText().toString());
 						}
 						
 						@Override
 						protected void onPostExecute(String result) {
+							dialog.dismiss();
 							Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
 						}
 					};
